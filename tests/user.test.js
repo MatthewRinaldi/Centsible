@@ -23,7 +23,7 @@ describe('POST /users/login', () => {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
             email: 'ap@gmail.com',
-            password: '12345'
+            password: '12345' //wrong password
         });
 
         expect(response.statusCode).toBe(302);

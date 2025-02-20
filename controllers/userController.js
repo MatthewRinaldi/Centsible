@@ -4,6 +4,10 @@ exports.getLogin = (req,res,next) => {
     return res.render('./user/login');
 };
 
+exports.getSignup = (req,res,next) => {
+    return res.render('./user/signup');
+}
+
 exports.login = (req,res,next) => {
     let email = req.body.email;
     let password = req.body.password;
@@ -27,6 +31,15 @@ exports.login = (req,res,next) => {
     })
     .catch(err=>next(err));
 };
+
+exports.signup = (req,res,next) => {
+    let user = new model(req.body);
+    user.save()
+    .then(user=> {
+        res.redirect('/users/login');
+    })
+    .catch(err=>next);
+}
 
 exports.profile = (req,res,next) => {
     let id = req.session.user;

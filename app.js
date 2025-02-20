@@ -7,7 +7,7 @@ const session = require('express-session');
 const app = express();
 const port = 3000;
 const host = 'localhost';
-let mongoUri = "mongodb+srv://admin:admin123@cluster0.jxafl.mongodb.net/sprint0?retryWrites=true&w=majority&appName=Cluster0"
+let mongoUri = "mongodb+srv://admin:admin123@cluster0.jxafl.mongodb.net/sprint0?retryWrites=true&w=majority&appName=Cluster0";
 app.set('view engine', 'ejs');
 
 mongoose.connect(mongoUri)
