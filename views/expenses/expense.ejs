@@ -1,5 +1,34 @@
-<%- include('../partials/header.ejs')%>
-    <div class="container">
-        <h2> <%=expense.expenseName%> Expense</h2>
-    </div>
-<%- include('../partials/footer.ejs')%>
+<% include('../partials/header.ejs') %>
+
+<div class="container">
+    <h2>My Expenses</h2>
+    
+    <% if (expenses.length === 0) { %>
+        <p>No expenses found. <a href="/expenses/new">Add one?</a></p>
+    <% } else { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% expenses.forEach(expense => { %>
+                    <tr>
+                        <td><%= expense.name %></td>
+                        <td>$<%= expense.amount %></td>
+                        <td><%= new Date(expense.date).toLocaleDateString() %></td>
+                        <td>
+                            <a href="/expenses/<%= expense._id %>">View</a>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } %>
+</div>
+
+<% include('../partials/footer.ejs') %>
