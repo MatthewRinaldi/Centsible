@@ -1,0 +1,22 @@
+<%- include('../partials/header.ejs')%>
+    <div class="container">
+        <h2>Create Expense</h2>
+        <form action = '/expenses/' method = 'POST' class="loginForm">
+            <label for="expenseName">Expense Name</label></td>
+            <input type="text" id="expenseName" name="expenseName" required></td>
+            <br>
+            <label for="expenseAmount">Amount</label>
+            <input type="number" id="expenseAmount" name="expenseAmount" required>
+            <br>
+            <label for="expenseCategory">Category</label>
+            <select id="expenseCategory" name="expenseCategory" required>
+                <option value="">Select Category</option>
+                <option value="Housing">Housing</option>
+                <option value="Grocery">Grocery</option>
+                <option value="Insurance">Insurance</option>
+            </select>
+            <br>
+            <input id="submit" type="submit" value="Create">     
+        </form>
+    </div>
+<%- include('../partials/footer.ejs')%>

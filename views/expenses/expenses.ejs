@@ -1,0 +1,41 @@
+<%- include('../partials/header.ejs')%>
+    <div class="container">
+        <h2>Expenses <a href="/expenses/new" style="font-weight: bold;">+</a></h2>
+    </div>
+
+    <% if (expenses.length === 0) { %>
+        <p>No expenses found.</p>
+    <% } else { %>
+        <table class="expenses-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% expenses.forEach(expense => { %>
+                    <tr>
+                        <td><%= expense.name || "N/A" %></td>
+                        <td>$<%= expense.amount || "0.00" %></td>
+                        <td><%= expense.category || "Uncategorized" %></td>
+                        <td><%= expense.date ? new Date(expense.date).toLocaleDateString() : "N/A" %></td>
+                        <td><a href="/expenses/<%= expense._id %>" class="view-btn">View</a></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } %>
+
+    <script>
+        if (window.location.search.includes("refresh=true")) {
+            window.location.href = "/expenses";
+        }
+    </script>
+
+</div>
+
+<% include('../partials/footer.ejs') %>

@@ -1,13 +1,15 @@
 const express = require('express');
 const morgan = require('morgan');
 const userRoutes = require('./routes/userRoutes');
+const expenseRoutes = require('./routes/expenseRoutes');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 
 const app = express();
 const port = 3000;
 const host = 'localhost';
-let mongoUri = "mongodb+srv://admin:admin123@cluster0.jxafl.mongodb.net/sprint0?retryWrites=true&w=majority&appName=Cluster0"
+let mongoUri = "mongodb+srv://admin:admin123@cluster0.jxafl.mongodb.net/sprint0?retryWrites=true&w=majority&appName=Cluster0";
 app.set('view engine', 'ejs');
 
 mongoose.connect(mongoUri)
@@ -23,6 +25,7 @@ app.use(
         secret: "ajfeirf90aeu9eroejfoefj",
         resave: false,
         saveUninitialized: false,
+        store: new MongoStore({mongoUrl: mongoUri}),
         cookie: {maxAge: 60*60*1000}
         })
 );
@@ -41,5 +44,6 @@ app.get('/', (req,res) => {
 });
 
 app.use('/users', userRoutes);
+app.use('/expenses', expenseRoutes);
 
 module.exports = app;
