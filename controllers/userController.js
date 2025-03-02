@@ -1,31 +1,32 @@
 const model = require('../models/user');
+const bcrypt = require('bcryptjs');
 
 exports.getLogin = (req,res,next) => {
     return res.render('./user/login');
 };
 
-exports.login = (req,res,next) => {
+xports.login = (req, res, next) => {
     let email = req.body.email;
     let password = req.body.password;
+
     model.findOne({ email: email })
-    .then(user => {
-        if (!user) {
-            console.log('Invalid email address!');  
-            res.redirect('/users/login');
-        } else {
-            user.comparePassword(password)
-            .then(result=>{
-                if(result){
-                    req.session.user = user._id;
-                    res.redirect('/users/profile');
-                } else {
-                    console.log("Incorrect password!");
-                    res.redirect('/users/login');
-                }
-            })
-        }
-    })
-    .catch(err=>next(err));
+        .then(user => {
+            if (!user) {
+                console.log('Invalid email address!');
+                return res.redirect('/users/login');
+            }
+            return bcrypt.compare(password, user.password)
+                .then(isMatch => {
+                    if (isMatch) {
+                        req.session.user = user._id;
+                        return res.redirect('/users/profile');
+                    } else {
+                        console.log("Incorrect password!");
+                        return res.redirect('/users/login');
+                    }
+                });
+        })
+        .catch(err => next(err));
 };
 
 exports.profile = (req,res,next) => {
