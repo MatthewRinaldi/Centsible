@@ -82,25 +82,23 @@ exports.login = (req, res, next) => {
     let password = req.body.password;
 
     model.findOne({ email: email })
-    .then(user => {
-        if (!user) {
-            console.log('Invalid email address!');  
-            return res.redirect('/users/login');
-        }
-
-        user.comparePassword(password)
-        .then(result => {
-            if (result) {
-                req.session.user = user._id;
-                return res.redirect('/users/profile');  
-            } else {
-                console.log("Incorrect password!");
-                return res.redirect('/users/login');  
+        .then(user => {
+            if (!user) {
+                console.log('Invalid email address!');
+                return res.redirect('/users/login');
             }
+            return bcrypt.compare(password, user.password)
+                .then(isMatch => {
+                    if (isMatch) {
+                        req.session.user = user._id;
+                        return res.redirect('/users/profile');
+                    } else {
+                        console.log("Incorrect password!");
+                        return res.redirect('/users/login');
+                    }
+                });
         })
-        .catch(err => next(err));  
-    })
-    .catch(err => next(err));  
+        .catch(err => next(err));
 };
 
 exports.signup = (req, res, next) => {
