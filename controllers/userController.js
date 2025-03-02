@@ -10,28 +10,16 @@ exports.getSignup = (req, res, next) => {
     return res.render('./user/signup');
 };
 
-exports.login = (req, res, next) => {
-    let email = req.body.email;
-    let password = req.body.password;
+exports.login = async (req, res) => {
+    const { email, password } = req.body;
+    const user = await model.findOne({ email });
 
-    model.findOne({ email: email })
-        .then(user => {
-            if (!user) {
-                console.log('Invalid email address!');
-                return res.redirect('/users/login');
-            }
-            return bcrypt.compare(password, user.password)
-                .then(isMatch => {
-                    if (isMatch) {
-                        req.session.user = user._id;
-                        return res.redirect('/users/profile');
-                    } else {
-                        console.log("Incorrect password!");
-                        return res.redirect('/users/login');
-                    }
-                });
-        })
-        .catch(err => next(err));
+    if (!user || !(await user.comparePassword(password))) {
+        return res.render("user/login", { error: "Invalid email or password" });
+    }
+
+    req.session.user = user;
+    res.redirect("/users/profile"); // Redirect to profile on success
 };
 
 exports.signup = (req, res, next) => {
