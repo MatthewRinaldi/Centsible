@@ -15,4 +15,6 @@ router.get('/profile', controller.profile);
 
 router.get('/logout', controller.logout);
 
+router.post('/addCategory', controller.addCategory);
+
 module.exports = router;

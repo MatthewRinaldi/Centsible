@@ -1,6 +1,55 @@
 <%- include('../partials/header.ejs')%>
     <div class="container">
-        <h1>Welcome, <%=user.firstName%>!</h1>
-        <button style="bottom: 40px;"><a href="/users/logout">Logout</a></button>
+
+        <div class="profile-container">
+            <div class="profile-box">
+                <div class="profile-pic">
+                    <h3><%= user.firstName%><br><%= user.lastName%></h3>
+                </div>
+                <div class="info-rows">
+                    <div class="row" id="currentSpendingTab">Current Spending</div>
+                    <div class="row" id="monthlySpendingTab">Monthly Spending</div>
+                    <div class="row" id="spendingHabitsTab">Spending Habits</div>
+                    <div class="row" id="settingsTab">Settings</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <div id="currentSpending" class="tab-content">
+                <h2 id="currentMonthHeader"></h2>
+                <div class="bubbles-container"></div>
+            </div>
+            <div id="monthlySpending" class="tab-content">
+                <h2>
+                    <a id="prevMonth" style="cursor: pointer;">&lt;</a>  
+                    <span id="selectedMonth"></span>   
+                    <a id="nextMonth" style="cursor: pointer;">&gt;</a>
+                </h2>
+                <div class="bubbles-container"></div>
+            </div>
+            <div id="spendingHabits" class="tab-content">
+                <h2>All Time Spending</h2>
+                <div class="bubbles-container"></div>
+            </div>
+            <div id="settings" class="tab-content">
+                <h2>Categories <a style="font-weight: bold; cursor: pointer;" id="addCategoryBtn">+</a></h2>
+                <ul id="categoriesList"></ul>
+            </div>
+        </div>
+
+        <div id="addCategoryModal" class="modal">
+            <div class="modal-content">
+                <h3>Enter New Category</h3>
+                <input type="text" id="newCategoryName" placeholder="Category Name" />
+                <button id="submitCategoryBtn">Submit</button>
+                <button id="cancelCategoryBtn">Cancel</button>
+            </div>
+        </div>
+
+        <div id="overlay"></div>
+
+        <script src="/js/categoryAdd.js"></script>
+        <script src="/js/profileMenu.js"></script>
     </div>
 <%- include('../partials/footer.ejs')%>

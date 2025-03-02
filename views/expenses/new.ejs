@@ -11,9 +11,9 @@
             <label for="expenseCategory">Category</label>
             <select id="expenseCategory" name="expenseCategory" required>
                 <option value="">Select Category</option>
-                <option value="Housing">Housing</option>
-                <option value="Grocery">Grocery</option>
-                <option value="Insurance">Insurance</option>
+                <% user.categories.forEach(category=> {%>
+                    <option value="<%=category%>"><%=category%></option>
+                <%})%>
             </select>
             <br>
             <input id="submit" type="submit" value="Create">     
