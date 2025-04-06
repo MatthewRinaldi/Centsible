@@ -14,9 +14,11 @@ app.set('view engine', 'ejs');
 
 mongoose.connect(mongoUri)
 .then(() => {
-    app.listen(port, host, ()=>{
-        console.log('Server is running on port', port);
-    })
+    if (process.env.NODE_ENV !== 'test') {
+        app.listen(port, host, () => {
+            console.log('Server is running on port', port);
+        });
+    }
 })
 .catch(err=>console.log(err.message));
 
