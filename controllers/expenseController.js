@@ -11,7 +11,15 @@ exports.getExpenses = (req, res, next) => {
         .sort({ date: -1 })  // Sort by date (newest first)
         .then(expenses => {
             console.log("Expenses retrieved from DB:", expenses);
-            res.render("expenses/expenses", { expenses });
+            user.findById(req.session.user)
+            .then(user => {
+                let totalExpense = 0
+                expenses.forEach(expense => {
+                    totalExpense = totalExpense + expense.amount;
+                })
+                res.render("expenses/expenses", { expenses, user, totalExpense });
+            })
+            .catch(err=>next(err));
         })
         .catch(err => {
             console.error("Error fetching expenses:", err);

@@ -206,3 +206,25 @@ exports.update = (req,res,next) => {
         res.status(500).json({ message: 'Failed to update category.', error: err});
     });
 }
+
+exports.income = (req,res,next) => {
+    const { monthlyIncome, savingsGoal, savingsDeadline, month } = req.body;
+
+    model.findById(req.session.user)
+    .then(user => {
+        user.income.incomeAmount = Number(monthlyIncome);
+        user.income.savingsAmount = Number(savingsGoal);
+        user.income.savingsDeadline = Number(savingsDeadline);
+        user.income.savingsMonth = String(month);
+
+        return user.save();
+    })
+    .then(() => {
+        res.status(200);
+        res.redirect("/expenses");
+    })
+    .catch(err => {
+        console.error(err);
+        res.status(500).json({ message: "Failed to save income and savings information."});
+    })
+}

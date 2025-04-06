@@ -38,7 +38,24 @@
                 <ul id="categoriesList"></ul>
             </div>
             <div id="settings" class="tab-content">
-                
+                <h2>Settings</h2>
+                <div class="settingsContainer">
+                    <h4>Income Settings</h4>
+                    <form action="/users/incomeUpdate" method="post">
+                        <label for="monthlyIncome">Monthly Income:</label><br>
+                        <input type="number" id="monthlyIncome" name="monthlyIncome" min="1" style="margin-bottom: 10px;"><br>
+
+                        <label for="savingsGoal">Savings Goal:</label><br>
+                        <input type="number" id="savingsGoal" name="savingsGoal" min="1" style="margin-bottom: 10px;"><br>
+
+                        <label for="savingsDeadline">Duration of Savings Goal:</label><br>
+                        <input type="number" id="savingsDeadline" name="savingsDeadline" min="1" style="margin-bottom: 10px;"><br>
+
+                        <input type="hidden" id="month" name="month" value="<%= currentMonth %>">
+
+                        <input type="submit" value="Submit">
+                    </form>
+                </div>
             </div>
         </div>
 

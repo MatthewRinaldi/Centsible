@@ -19,4 +19,6 @@ router.post('/addCategory', controller.addCategory);
 
 router.post('/updateBudget', controller.update);
 
+router.post('/incomeUpdate', controller.income);
+
 module.exports = router;
