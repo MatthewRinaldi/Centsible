@@ -10,5 +10,7 @@ router.get('/new', controller.getNewExpense);
 router.post('/', controller.createExpense);
 
 router.get('/:id', controller.getExpense);
+console.log(controller);
+
 
 module.exports = router;

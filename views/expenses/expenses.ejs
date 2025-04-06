@@ -2,7 +2,16 @@
     <div class="container">
         <h2>Expenses <a href="/expenses/new" style="font-weight: bold;">+</a></h2>
     </div>
-
+    <form method="GET" action="/expenses" class="filter-form">
+        <input type="text" name="searchTerm" placeholder="Search by name" value="<%= typeof searchTerm !== 'undefined' ? searchTerm : '' %>" />
+        <input type="text" name="category" placeholder="Category" value="<%= typeof category !== 'undefined' ? category : '' %>" />
+        <input type="date" name="startDate" value="<%= typeof startDate !== 'undefined' ? startDate : '' %>" />
+        <input type="date" name="endDate" value="<%= typeof endDate !== 'undefined' ? endDate : '' %>" />
+        <input type="number" name="minAmount" placeholder="Min Amount" step="0.01" value="<%= typeof minAmount !== 'undefined' ? minAmount : '' %>" />
+        <input type="number" name="maxAmount" placeholder="Max Amount" step="0.01" value="<%= typeof maxAmount !== 'undefined' ? maxAmount : '' %>" />
+        <button type="submit">Filter</button>
+    </form>
+    
     <% if (expenses.length === 0) { %>
         <p style="text-align: center; font-weight: bold;">No expenses found.</p>
     <% } else { %>
