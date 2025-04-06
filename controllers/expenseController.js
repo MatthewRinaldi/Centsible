@@ -8,50 +8,24 @@ exports.getExpenses = async (req, res, next) => {
             return res.redirect("/users/login");
         }
 
-        const { searchTerm, category, startDate, endDate, minAmount, maxAmount } = req.query;
-
-        let query = {
-            user: req.session.user
-        };
-
-        if (searchTerm) {
-            query.name = { $regex: searchTerm, $options: 'i' };
-        }
-
-        if (category) {
-            query.category = category;
-        }
-
-        if (startDate || endDate) {
-            query.date = {};
-            if (startDate) query.date.$gte = new Date(startDate);
-            if (endDate) query.date.$lte = new Date(endDate);
-        }
-
-        if (minAmount || maxAmount) {
-            query.amount = {};
-            if (minAmount) query.amount.$gte = parseFloat(minAmount);
-            if (maxAmount) query.amount.$lte = parseFloat(maxAmount);
-        }
-
-        const expenses = await model.find(query).sort({ date: -1 });
-
-        res.render("expenses/expenses", {
-            expenses,
-            currentPage: 'expenses',
-            user: req.session.user,
-            searchTerm,
-            category,
-            startDate,
-            endDate,
-            minAmount,
-            maxAmount
+    model.find({ user: req.session.user })
+        .sort({ date: -1 })  // Sort by date (newest first)
+        .then(expenses => {
+            console.log("Expenses retrieved from DB:", expenses);
+            user.findById(req.session.user)
+            .then(user => {
+                let totalExpense = 0
+                expenses.forEach(expense => {
+                    totalExpense = totalExpense + expense.amount;
+                })
+                res.render("expenses/expenses", { expenses, user, totalExpense });
+            })
+            .catch(err=>next(err));
+        })
+        .catch(err => {
+            console.error("Error fetching expenses:", err);
+            next(err);
         });
-
-    } catch (err) {
-        console.error("Error fetching expenses:", err);
-        next(err);
-    }
 };
 
 

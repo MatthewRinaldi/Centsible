@@ -15,6 +15,20 @@
     <% if (expenses.length === 0) { %>
         <p style="text-align: center; font-weight: bold;">No expenses found.</p>
     <% } else { %>
+        <%if (user.income.incomeAmount === 0 || user.savingsAmount === 0) {%>
+            <h3 style="text-align: center;">Please set a monthly income amount and savings goal in your settings menu!</h3>
+        <%} else if (user.income.incomeAmount - totalExpense > 0) {%>
+            <h3 style="text-align: center;">Based on your monthly income, you have $<%=user.income.incomeAmount - totalExpense%> left to spend this month</h3>
+            <h3 style="text-align: center;">To achieve your savings goal of $<%= user.income.savingsAmount %> in <%= user.income.savingsDeadline %> months, you will need to save $<%= parseFloat(user.income.savingsAmount / user.income.savingsDeadline).toFixed(2) %> each month</h3>
+            <%if ((user.income.incomeAmount - totalExpense) - parseFloat(user.income.savingsAmount / user.income.savingsDeadline).toFixed(2) > 0) {%>
+                <h3 style="text-align: center;">Based on your savings goals and remaining income, you have $<%= parseFloat((user.income.incomeAmount - totalExpense) - parseFloat(user.income.savingsAmount / user.income.savingsDeadline).toFixed(2)).toFixed(2) %> left to spend this month</h3>
+            <%} else {%>
+                <h3 style="text-align: center;">Based on your savings goals and remaining income, your balance is lower than your monthly savings budget.</h3>
+            <%}%>
+            <%} else {%>
+            <h3 style="text-align: center;">Based on your monthly income, you have spent more than your alloted monthly income by $<%=-(user.income.incomeAmount - totalExpense)%></h3>
+            <h3 style="text-align: center;">It is impossible to save for your goal this month given your remaining balance</h3>
+        <%}%>
         <table class="expenses-table">
             <thead>
                 <tr>

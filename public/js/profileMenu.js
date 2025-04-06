@@ -141,7 +141,7 @@ document.getElementById('settingsTab').addEventListener('click', () => {
     fetchData('/users/profile?type=settings').then(response => {
         if (response) {
             response.json().then(data => {
-                
+                console.log(data)
             });
         }
     });

@@ -12,7 +12,14 @@ const userSchema = new Schema({
             name: {type: String, required: true},
             budget: {type: Number, default: 0}
         }
-    ]
+    ],
+    income:
+        {
+            incomeAmount: {type: Number, default: 0},
+            savingsAmount: {type: Number, default: 0},
+            savingsDeadline: {type: Number, default: 0},
+            savingsMonth: {type: String, default: null}
+        }
 });
 
 
