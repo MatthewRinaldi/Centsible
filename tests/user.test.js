@@ -16,17 +16,19 @@ describe('POST /users/login', () => {
         expect(response.headers.location).toBe('/users/profile');
     });
 
-    it('should show an error on incorrect login', async () => {
+    it('should show login page again with error message on incorrect login', async () => {
 
         const response = await request(app)
         .post('/users/login')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
-            email: 'ap@gmail.com',
-            password: '12345' //wrong password
+            email: 'wrong@gmail.com',
+            password: '12345' // wrong password
         });
-
-        expect(response.statusCode).toBe(302);
-        expect(response.headers.location).toBe('/users/login');
+    
+        expect(response.statusCode).toBe(200);
+        expect(response.text).toContain('Invalid email or password'); 
     });
+    
+    
 });

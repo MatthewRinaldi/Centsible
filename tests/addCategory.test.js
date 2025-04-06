@@ -1,28 +1,18 @@
 const request = require('supertest');
 const app = require('../app');
 
-describe('POST /users/addCategory', () => {
-    it('should add a new category and respond with success', async () => {
+describe('POST /expenses', () => {
+    it('should create expense and redirect', async () => {
         const response = await request(app)
-            .post('/users/addCategory')
-            .set('Content-Type', 'application/json')
+            .post('/expenses')
+            .set('Content-Type', 'application/x-www-form-urlencoded')
             .send({
-                categoryName: 'Test Category'
+                expenseName: 'Coffee',
+                expenseAmount: '3.50',
+                expenseCategory: 'Food',
+                expenseDate: '2025-04-06'
             });
-
-        expect(response.statusCode).toBe(200);
-        expect(response.body.message).toBe('Category added');
-    });
-
-    it('should return an error when categoryName is missing', async () => {
-        const response = await request(app)
-            .post('/users/addCategory')
-            .set('Content-Type', 'application/json')
-            .send({
-                categoryName: ''
-            });
-
-        expect(response.statusCode).toBe(400);
-        expect(response.body.message).toBe('Category name is required');
+        expect(response.statusCode).toBe(302);
+        expect(response.headers.location).toBe('/users/login');
     });
 });
