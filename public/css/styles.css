@@ -342,3 +342,22 @@ tr:nth-child(odd) {
     top: 50%;
     transform: translateY(-50%);
 }
+
+/* Profile Budget Settings */
+
+.categoryItem {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.categoryName {
+    text-align: left;
+    flex-grow: 1;
+}
+
+.categoryBudgetAmount {
+    text-align: right;
+    min-width: 80px;
+    font-weight: bold;
+}

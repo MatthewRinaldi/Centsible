@@ -7,9 +7,12 @@ const userSchema = new Schema({
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    categories: { type: [String], required: [true, "You must have a category to sort expenses!"],
-        enum: []
-    }
+    categories: [
+        {
+            name: {type: String, required: true},
+            budget: {type: Number, default: 0}
+        }
+    ]
 });
 
 

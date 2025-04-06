@@ -1,5 +1,6 @@
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 let currentMonthIndex = new Date().getMonth();
+let selectedCategoryName = null;
 
 
 function showTab(tabId) {
@@ -91,19 +92,56 @@ document.getElementById('spendingHabitsTab').addEventListener('click', () => {
     });
 });
 
-document.getElementById('settingsTab').addEventListener('click', () => {
-    showTab('settings');
-    fetchData('/users/profile?type=settings').then(response => {
+document.getElementById('budgetSettingsTab').addEventListener('click', () => {
+    showTab('budget');
+    fetchData('/users/profile?type=budget').then(response => {
         if (response) {
-            console.log(response);
             response.json().then(data => {
                 const categoriesList = document.getElementById('categoriesList');
                 categoriesList.innerHTML = '';
                 data.categories.forEach(category => {
                     const li = document.createElement('li');
-                    li.textContent = category;
+                    li.className = "categoryBudget";
+
+                    const wrapper = document.createElement('div');
+                    wrapper.className = "categoryItem";
+
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = "categoryName";
+                    nameSpan.textContent = category.name;
+
+                    const budgetSpan = document.createElement('span');
+                    budgetSpan.className = "categoryBudgetAmount";
+                    budgetSpan.textContent = `$${category.budget}`;
+
+                    wrapper.appendChild(nameSpan);
+                    wrapper.appendChild(budgetSpan);
+                    li.appendChild(wrapper);
+
+                    li.dataset.budget = category.budget;
+                    li.dataset.name = category.name;
+
+                    li.addEventListener('click', () => {
+                        document.getElementById("categoryBudgetModal").style.display = "block";
+                        document.getElementById("overlay").style.display = "block";
+
+                        selectedCategoryName = li.dataset.name;
+                        selectedCategoryElement = li.querySelector('.categoryBudgetAmount');
+                    });
+
                     categoriesList.appendChild(li);
                 });
+            });
+        }
+    });
+});
+
+document.getElementById('settingsTab').addEventListener('click', () => {
+    showTab('settings');
+    fetchData('/users/profile?type=settings').then(response => {
+        if (response) {
+            response.json().then(data => {
+                
             });
         }
     });

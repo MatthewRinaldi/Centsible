@@ -30,14 +30,39 @@ document.addEventListener("DOMContentLoaded", function() {
                 },
                 body: JSON.stringify({ categoryName: newCategoryName }),
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data.message);
-                if (data.message === 'Category added successfully.') {
+            .then(async response => {
+                const data = await response.json();
+
+                if (response.ok) {
                     // Add the new category to the list dynamically
                     const newCategoryItem = document.createElement("li");
-                    newCategoryItem.textContent = newCategoryName;
-                    document.querySelector("#settings ul").appendChild(newCategoryItem);
+                    const wrapper = document.createElement("div");
+                    wrapper.className = "categoryItem";
+
+                    const nameSpan = document.createElement("span");
+                    nameSpan.className = "categoryName";
+                    nameSpan.textContent = newCategoryName;
+
+                    const budgetSpan = document.createElement("span");
+                    budgetSpan.className = "categoryBudgetAmount";
+                    budgetSpan.textContent = "$0";
+
+                    newCategoryItem.dataset.name = newCategoryName;
+                    newCategoryItem.dataset.budget = 0;
+
+                    wrapper.appendChild(nameSpan);
+                    wrapper.appendChild(budgetSpan);
+                    newCategoryItem.appendChild(wrapper);
+
+                    newCategoryItem.addEventListener('click', () => {
+                        document.getElementById("categoryBudgetModal").style.display = "block";
+                        document.getElementById("overlay").style.display = "block";
+
+                        selectedCategoryName = newCategoryItem.dataset.name;
+                        selectedCategoryElement = newCategoryItem.querySelector('.categoryBudgetAmount');
+                    });
+
+                    document.querySelector("#categoriesList").appendChild(newCategoryItem);
     
                     // Close the modal and hide overlay
                     addCategoryModal.style.display = "none";

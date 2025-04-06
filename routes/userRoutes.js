@@ -17,4 +17,6 @@ router.get('/logout', controller.logout);
 
 router.post('/addCategory', controller.addCategory);
 
+router.post('/updateBudget', controller.update);
+
 module.exports = router;

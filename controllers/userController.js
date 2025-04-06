@@ -24,7 +24,7 @@ exports.login = async (req, res) => {
 
 exports.signup = (req, res, next) => {
     let user = new model(req.body);
-    user.categories = ["Housing"];
+    user.categories = [{name: "Housing", budget: 0}];
     user.save()
     .then(user => {
         res.redirect('/users/login');
@@ -121,7 +121,7 @@ exports.profile = async (req, res, next) => {
             category.positionY = centerY + radius * Math.sin(angle);
         });
 
-        if (req.query.type === 'settings') {
+        if (req.query.type === 'budget') {
             return res.json({
                 categories: user.categories
             });
@@ -166,8 +166,11 @@ exports.addCategory = (req,res,next) => {
 
     model.findById(id)
     .then(user => {
-        if (!user.categories.includes(categoryName)) {
-            user.categories.push(categoryName);
+        
+        const categoryExists = user.categories.some(cat => cat.name === categoryName);
+
+        if (!categoryExists) {
+            user.categories.push({name: categoryName, budget: 0});
             user.save()
             .then(() => {
                 return res.status(200).json({ message: 'Category added successfully.' });
@@ -180,4 +183,26 @@ exports.addCategory = (req,res,next) => {
         }
     })
     .catch(err=>next(err));
+}
+
+exports.update = (req,res,next) => {
+    const { budgetAmount, categoryName } = req.body;
+
+    model.findById(req.session.user)
+    .then(user => {
+        const category = user.categories.find(cat => cat.name === categoryName);
+        if (category) {
+            category.budget = Number(budgetAmount);
+            return user.save();
+        } else {
+            throw new Error("Category not found")
+        }
+    })
+    .then(() => {
+        res.status(200).json({ message: 'Category updated successfully.' })
+    })
+    .catch(err => {
+        console.error(err);
+        res.status(500).json({ message: 'Failed to update category.', error: err});
+    });
 }
