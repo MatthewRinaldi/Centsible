@@ -8,7 +8,7 @@ exports.getExpenses = async (req, res, next) => {
             return res.redirect("/users/login");
         }
 
-    model.find({ user: req.session.user })
+        model.find({ user: req.session.user })
         .sort({ date: -1 })  // Sort by date (newest first)
         .then(expenses => {
             console.log("Expenses retrieved from DB:", expenses);
@@ -26,6 +26,10 @@ exports.getExpenses = async (req, res, next) => {
             console.error("Error fetching expenses:", err);
             next(err);
         });
+    }
+    catch (err) {
+        throw new Error(err);
+    }
 };
 
 
