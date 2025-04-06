@@ -10,7 +10,7 @@ router.get('/new', controller.getNewExpense);
 router.post('/', controller.createExpense);
 
 router.get('/:id', controller.getExpense);
-console.log(controller);
 
+router.get('/expenses', controller.getFilteredExpenses);
 
 module.exports = router;

@@ -110,56 +110,89 @@ exports.getExpense = (req, res, next) => {
             console.error("Error fetching expense:", err);
             next(err);
         });
-        exports.searchExpenses = async (req, res, next) => {
-            try {
-                if (!req.session.user) {
-                    return res.redirect("/users/login");
-                }
         
-                const { searchTerm, category, startDate, endDate, minAmount, maxAmount } = req.query;
-        
-                let query = { user: req.session.user };
-        
-                if (searchTerm) {
-                    query.name = { $regex: searchTerm, $options: 'i' };
-                }
-        
-                if (category) {
-                    query.category = category;
-                }
-        
-                if (startDate || endDate) {
-                    query.date = {};
-                    if (startDate) query.date.$gte = new Date(startDate);
-                    if (endDate) query.date.$lte = new Date(endDate);
-                }
-        
-                if (minAmount || maxAmount) {
-                    query.amount = {};
-                    if (minAmount) query.amount.$gte = parseFloat(minAmount);
-                    if (maxAmount) query.amount.$lte = parseFloat(maxAmount);
-                }
-        
-                const expenses = await model.find(query).sort({ date: -1 });
-        
-                res.render("expenses/expenses", {
-                    expenses,
-                    currentPage: 'expenses',
-                    user: req.session.user,
-                    searchTerm,
-                    category,
-                    startDate,
-                    endDate,
-                    minAmount,
-                    maxAmount
-                });
-        
-            } catch (err) {
-                console.error("Error fetching expenses:", err);
-                next(err);
-            }
-        };
-        
-        
+    
             
 };
+exports.searchExpenses = async (req, res, next) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect("/users/login");
+        }
+
+        const { searchTerm, category, startDate, endDate, minAmount, maxAmount } = req.query;
+
+        let query = { user: req.session.user };
+
+        if (searchTerm) {
+            query.name = { $regex: searchTerm, $options: 'i' };
+        }
+
+        if (category) {
+            query.category = category;
+        }
+
+        if (startDate || endDate) {
+            query.date = {};
+            if (startDate) query.date.$gte = new Date(startDate);
+            if (endDate) query.date.$lte = new Date(endDate);
+        }
+
+        if (minAmount || maxAmount) {
+            query.amount = {};
+            if (minAmount) query.amount.$gte = parseFloat(minAmount);
+            if (maxAmount) query.amount.$lte = parseFloat(maxAmount);
+        }
+
+        const expenses = await model.find(query).sort({ date: -1 });
+
+        res.render("expenses/expenses", {
+            expenses,
+            currentPage: 'expenses',
+            user: req.session.user,
+            searchTerm,
+            category,
+            startDate,
+            endDate,
+            minAmount,
+            maxAmount
+        });
+
+    } catch (err) {
+        console.error("Error fetching expenses:", err);
+        next(err);
+    }
+};
+exports.getFilteredExpenses = async (req, res, next) => {
+    try {
+        const { searchTerm, category, startDate, endDate, minAmount, maxAmount } = req.query;
+        
+        let query = { user: req.session.user };
+
+        if (searchTerm) {
+            query.name = { $regex: searchTerm, $options: 'i' }; // Case-insensitive search
+        }
+
+        if (category) {
+            query.category = category;
+        }
+
+        if (startDate || endDate) {
+            query.date = {};
+            if (startDate) query.date.$gte = new Date(startDate);
+            if (endDate) query.date.$lte = new Date(endDate);
+        }
+
+        if (minAmount || maxAmount) {
+            query.amount = {};
+            if (minAmount) query.amount.$gte = parseFloat(minAmount);
+            if (maxAmount) query.amount.$lte = parseFloat(maxAmount);
+        }
+
+        const expenses = await Expenses.find(query); 
+        res.json({ expenses }); // Send filtered data as JSON
+    } catch (err) {
+        console.error("Error fetching expenses:", err);
+        next(err);
+    }
+};   
