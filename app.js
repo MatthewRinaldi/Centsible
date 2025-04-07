@@ -6,6 +6,10 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 
+/**Added the override method to delete expense */
+const methodOverride = require('method-override');
+
+
 const app = express();
 const port = 3000;
 const host = 'localhost';
@@ -38,6 +42,8 @@ app.use((req, res, next) => {
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+/*Enables PUT and DELETE for the the expense deletion*/
+app.use(methodOverride('_method'));
 app.use(morgan('dev'));
 
 app.get('/', (req,res) => {
