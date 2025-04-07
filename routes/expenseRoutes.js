@@ -22,5 +22,6 @@ router.post('/:id/edit', controller.updateExpense);
 // Delete an expense
 router.delete('/:id', controller.deleteExpense);
 
+router.get('/expenses', controller.getFilteredExpenses);
 
 module.exports = router;
