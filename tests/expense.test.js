@@ -10,14 +10,12 @@ describe('Expense Routes (Edit & Delete)', () => {
     let deleteExpense;
 
     beforeAll(async () => {
-    
         user = await User.create({
             firstName: 'Test',
             lastName: 'User',
             email: 'testuser@example.com',
             password: 'testpass123'
         });
-
 
         editExpense = await Expense.create({
             name: 'Expense to Edit',
@@ -27,7 +25,6 @@ describe('Expense Routes (Edit & Delete)', () => {
             user: user._id
         });
 
-  
         deleteExpense = await Expense.create({
             name: 'Expense to Delete',
             amount: 50,
@@ -61,7 +58,7 @@ describe('Expense Routes (Edit & Delete)', () => {
 
     it('should delete an expense successfully', async () => {
         const response = await request(app)
-            .delete(`/expenses/${deleteExpense._id}`);
+            .delete(`/expenses/${deleteExpense._id}/delete`); 
 
         expect(response.statusCode).toBe(302);
         expect(response.headers.location).toBe('/expenses');
