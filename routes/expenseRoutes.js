@@ -20,7 +20,7 @@ router.get('/:id/edit', controller.getEditExpenseForm);
 router.post('/:id/edit', controller.updateExpense);
 
 // Delete an expense
-router.delete('/:id', controller.deleteExpense);
+router.delete('/:id/delete', controller.deleteExpense);
 
 router.get('/expenses', controller.getFilteredExpenses);
 
