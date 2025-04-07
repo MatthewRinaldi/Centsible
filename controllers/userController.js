@@ -228,3 +228,39 @@ exports.income = (req,res,next) => {
         res.status(500).json({ message: "Failed to save income and savings information."});
     })
 }
+exports.updateProfile = async (req, res, next) => {
+    try {
+        console.log(req.body);
+        const { firstName, lastName, email, notificationsEnabled, budgetAlert } = req.body;
+
+        
+        if (!req.session.user) {
+            return res.redirect('/users/login'); 
+        }
+
+        const userId = req.session.user._id;
+
+        
+        const user = await model.findById(userId);
+        if (!user) {
+            return res.status(404).send("User not found.");
+        }
+
+        
+        user.firstName = firstName || user.firstName;
+        user.lastName = lastName || user.lastName;
+        user.email = email || user.email;
+        user.notificationsEnabled = notificationsEnabled !== undefined ? notificationsEnabled : user.notificationsEnabled;
+        user.budgetAlert = budgetAlert !== undefined ? budgetAlert === 'true' : user.budgetAlert;
+
+        
+        await user.save();
+
+
+        res.redirect('/users/profile'); 
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error updating profile.");
+    }
+};
+

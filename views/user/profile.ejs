@@ -54,7 +54,34 @@
                         <input type="hidden" id="month" name="month" value="<%= currentMonth %>">
 
                         <input type="submit" value="Submit">
+                        <h4>Account Settings</h4>
                     </form>
+                    <form action="/users/updateProfile" method="post">
+                        <!-- Name Field -->
+                        <label for="firstName">First Name:</label><br>
+                        <input type="text" id="firstName" name="firstName" value="<%= user.firstName %>" required><br>
+    
+                        <label for="lastName">Last Name:</label><br>
+                        <input type="text" id="lastName" name="lastName" value="<%= user.lastName %>" required><br>
+    
+                        <!-- Email Field -->
+                        <label for="email">Email:</label><br>
+                        <input type="email" id="email" name="email" value="<%= user.email %>" required><br>
+    
+                        <!-- Notification Preferences Field -->
+                        <label for="notifications">Notification Preferences:</label><br>
+                        <select id="notifications" name="notifications">
+                            <option value="true" <%= user.notifications ? 'selected' : '' %>>Enabled</option>
+                            <option value="false" <%= !user.notifications ? 'selected' : '' %>>Disabled</option>
+                        </select><br>
+                        <label for="budgetAlert">Budget Alert:</label><br>
+                    <select id="budgetAlert" name="budgetAlert">
+                    <option value="true" <%= user.budgetAlert ? 'selected' : '' %>>Enabled</option>
+                    <option value="false" <%= user.budgetAlert === false ? 'selected' : '' %>>Disabled</option>
+                    </select><br>
+    
+                        <input type="submit" value="Update Profile">
+                        </form>
                 </div>
             </div>
         </div>

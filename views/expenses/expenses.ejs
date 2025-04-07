@@ -17,6 +17,7 @@
     <% if (expenses.length === 0) { %>
         <p style="text-align: center; font-weight: bold;">No expenses found.</p>
     <% } else { %>
+        <% if (user.budgetAlert){%>
         <% if (user.income.incomeAmount === 0 || user.savingsAmount === 0) { %>
             <h3 style="text-align: center;">Please set a monthly income amount and savings goal in your settings menu!</h3>
         <% } else if (user.income.incomeAmount - totalExpense > 0) { %>
@@ -24,7 +25,7 @@
             <h3 style="text-align: center;">To achieve your savings goal of $<%= user.income.savingsAmount %> in <%= user.income.savingsDeadline %> months, you will need to save $<%= parseFloat(user.income.savingsAmount / user.income.savingsDeadline).toFixed(2) %> each month</h3>
         <% } else { %>
             <h3 style="text-align: center;">You have spent more than your allotted monthly income by $<%= -(user.income.incomeAmount - totalExpense) %></h3>
-        <% } %>
+        <% }} %>
         
         <table class="expenses-table">
             <thead>

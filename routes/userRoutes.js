@@ -1,5 +1,7 @@
 const express = require('express');
 const controller = require('../controllers/userController');
+const userController = require('../controllers/userController'); 
+
 
 const router = express.Router();
 
@@ -20,5 +22,7 @@ router.post('/addCategory', controller.addCategory);
 router.post('/updateBudget', controller.update);
 
 router.post('/incomeUpdate', controller.income);
+
+router.post('/updateProfile', userController.updateProfile);
 
 module.exports = router;

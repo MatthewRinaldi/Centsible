@@ -19,7 +19,7 @@ const userSchema = new Schema({
             savingsAmount: {type: Number, default: 0},
             savingsDeadline: {type: Number, default: 0},
             savingsMonth: {type: String, default: null}
-        }
+        },budgetAlert:{type : Boolean, default:true}
 });
 
 
