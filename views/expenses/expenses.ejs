@@ -1,119 +1,4 @@
 
-<!---
-<%- include('../partials/header.ejs') %>
-<div class="container">
-    <h2>Expenses <a href="/expenses/new" style="font-weight: bold;">+</a></h2>
-</div>
-<form style="text-align: center;" id="filter-form" class="filter-form">
-    <input type="text" name="searchTerm" id="searchTerm" placeholder="Search by name" value="<%= typeof searchTerm !== 'undefined' ? searchTerm : '' %>" />
-    <input type="text" name="category" id="category" placeholder="Category" value="<%= typeof category !== 'undefined' ? category : '' %>" />
-    <input type="date" name="startDate" id="startDate" value="<%= typeof startDate !== 'undefined' ? startDate : '' %>" />
-    <input type="date" name="endDate" id="endDate" value="<%= typeof endDate !== 'undefined' ? endDate : '' %>" />
-    <input type="number" name="minAmount" id="minAmount" placeholder="Min Amount" step="0.01" value="<%= typeof minAmount !== 'undefined' ? minAmount : '' %>" />
-    <input type="number" name="maxAmount" id="maxAmount" placeholder="Max Amount" step="0.01" value="<%= typeof maxAmount !== 'undefined' ? maxAmount : '' %>" />
-    <button type="button" id="filterButton">Filter</button>
-</form>
-
- --Display filtered expenses here --
-<div id="expense-list">
-    <% if (expenses.length === 0) { %>
-        <p style="text-align: center; font-weight: bold;">No expenses found.</p>
-    <% } else { %>
-        <% if (user.budgetAlert){%>
-        <% if (user.income.incomeAmount === 0 || user.savingsAmount === 0) { %>
-            <h3 style="text-align: center;">Please set a monthly income amount and savings goal in your settings menu!</h3>
-        <% } else if (user.income.incomeAmount - totalExpense > 0) { %>
-            <h3 style="text-align: center;">Based on your monthly income, you have $<%= user.income.incomeAmount - totalExpense %> left to spend this month</h3>
-            <h3 style="text-align: center;">To achieve your savings goal of $<%= user.income.savingsAmount %> in <%= user.income.savingsDeadline %> months, you will need to save $<%= parseFloat(user.income.savingsAmount / user.income.savingsDeadline).toFixed(2) %> each month</h3>
-        <% } else { %>
-            <h3 style="text-align: center;">You have spent more than your allotted monthly income by $<%= -(user.income.incomeAmount - totalExpense) %></h3>
-        <% }} %>
-        
-        <table class="expenses-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Amount</th>
-                    <th>Category</th>
-                    <th>Date</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% expenses.forEach(expense => { %>
-                    <tr>
-                        <td><%= expense.name || "N/A" %></td>
-                        <td>$<%= expense.amount || "0.00" %></td>
-                        <td><%= expense.category || "Uncategorized" %></td>
-                        <td><%= expense.date ? new Date(expense.date).toLocaleDateString() : "N/A" %></td>
-                        <td><a href="/expenses/<%= expense._id %>" class="view-btn">View</a></td>
-                    </tr>
-                <% }); %>
-            </tbody>
-        </table>
-    <% } %>
-</div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const filterButton = document.getElementById("filterButton");
-        const filterForm = document.getElementById("filter-form");
-        const expenseList = document.getElementById("expense-list");
-
-        // Add event listener for the "Filter" button
-        filterButton.addEventListener("click", function () {
-            const formData = new FormData(filterForm);
-            const queryParams = new URLSearchParams();
-
-            formData.forEach((value, key) => {
-                queryParams.append(key, value);
-            });
-
-            // Send AJAX request to server to filter expenses
-            fetch(`/expenses?${queryParams.toString()}`, {
-                method: "GET",
-            })
-                .then(response => response.json())
-                .then(data => {
-                    // Dynamically update the expense list
-                    let expenseHTML = '';
-                    if (data.expenses.length === 0) {
-                        expenseHTML = '<p style="text-align: center; font-weight: bold;">No expenses found.</p>';
-                    } else {
-                        data.expenses.forEach(expense => {
-                            expenseHTML += `
-                                <tr>
-                                    <td>${expense.name || "N/A"}</td>
-                                    <td>$${expense.amount || "0.00"}</td>
-                                    <td>${expense.category || "Uncategorized"}</td>
-                                    <td>${expense.date ? new Date(expense.date).toLocaleDateString() : "N/A"}</td>
-                                    <td><a href="/expenses/${expense._id}" class="view-btn">View</a></td>
-                                </tr>
-                            `;
-                        });
-                    }
-
-                    expenseList.innerHTML = `<table class="expenses-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Amount</th>
-                                <th>Category</th>
-                                <th>Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>${expenseHTML}</tbody>
-                    </table>`;
-                })
-                .catch(err => console.error("Error filtering expenses:", err));
-        });
-    });
-</script>
-
-<% include('../partials/footer.ejs') %> -->
-
-
 <%- include('../partials/header.ejs') %>
 
 <div class="container">
@@ -134,14 +19,16 @@
     <% if (expenses.length === 0) { %>
         <p style="text-align: center; font-weight: bold;">No expenses found.</p>
     <% } else { %>
-        <% if (user.income.incomeAmount === 0 || user.savingsAmount === 0) { %>
-            <h3 style="text-align: center;">Please set a monthly income amount and savings goal in your settings menu!</h3>
-        <% } else if (user.income.incomeAmount - totalExpense > 0) { %>
-            <h3 style="text-align: center;">Based on your monthly income, you have $<%= user.income.incomeAmount - totalExpense %> left to spend this month</h3>
-            <h3 style="text-align: center;">To achieve your savings goal of $<%= user.income.savingsAmount %> in <%= user.income.savingsDeadline %> months, you will need to save $<%= parseFloat(user.income.savingsAmount / user.income.savingsDeadline).toFixed(2) %> each month</h3>
-        <% } else { %>
-            <h3 style="text-align: center;">You have spent more than your allotted monthly income by $<%= -(user.income.incomeAmount - totalExpense) %></h3>
-        <% } %>
+        <% if (user.budgetAlert) {%>
+            <% if (user.income.incomeAmount === 0 || user.savingsAmount === 0) { %>
+                <h3 style="text-align: center;">Please set a monthly income amount and savings goal in your settings menu!</h3>
+            <% } else if (user.income.incomeAmount - totalExpense > 0) { %>
+                <h3 style="text-align: center;">Based on your monthly income, you have $<%= user.income.incomeAmount - totalExpense %> left to spend this month</h3>
+                <h3 style="text-align: center;">To achieve your savings goal of $<%= user.income.savingsAmount %> in <%= user.income.savingsDeadline %> months, you will need to save $<%= parseFloat(user.income.savingsAmount / user.income.savingsDeadline).toFixed(2) %> each month</h3>
+            <% } else { %>
+                <h3 style="text-align: center;">You have spent more than your allotted monthly income by $<%= -(user.income.incomeAmount - totalExpense) %></h3>
+            <% } %>
+        <%}%>
 
         <table class="expenses-table">
             <thead>

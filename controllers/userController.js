@@ -127,6 +127,13 @@ exports.profile = async (req, res, next) => {
             });
         } 
 
+        if (req.query.type === 'all') {
+            return res.json({
+                categories: user.categories,
+                total: categoriesData
+            });
+        }
+
         if (req.query.type) {
             console.log("Returning JSON:", { categoriesData, currentMonth, filterName });
             return res.json({
