@@ -86,7 +86,25 @@ document.getElementById('spendingHabitsTab').addEventListener('click', () => {
         if (response) {
             console.log(response);
             response.json().then(data => {
-                renderBubbleChart('#spendingHabits .bubbles-container', data.categoriesData);
+                const spendingRecommendations = document.getElementById('spendingRecommendations');
+                spendingRecommendations.innerHTML = '';
+                data.categories.forEach(category => {
+                    const li = document.createElement('li');
+                    li.className = 'categorySpending';
+
+                    const wrapper = document.createElement('div');
+                    wrapper.className = "categoryItem";
+
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = "categoryName";
+                    nameSpan.textContent = category.name;
+
+
+                    wrapper.appendChild(nameSpan);
+                    li.appendChild(wrapper);
+
+                    spendingRecommendations.appendChild(li);
+                });
             });   
         }
     });
