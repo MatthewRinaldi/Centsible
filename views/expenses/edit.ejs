@@ -1,0 +1,33 @@
+<%- include('../partials/header.ejs') %>
+
+<div class="container">
+    <h2>Edit Expense</h2>
+
+    <% if (error) { %>
+        <p style="color: red;"><%= error %></p>
+    <% } %>
+
+    <form action="/expenses/<%= expense._id %>/edit" method="POST" class="loginForm">
+        <label for="expenseName">Expense Name</label>
+        <input type="text" id="expenseName" name="expenseName" value="<%= expense.name %>" required>
+
+        <label for="expenseAmount">Amount</label>
+        <input type="number" id="expenseAmount" name="expenseAmount" step="0.01" value="<%= expense.amount %>" required>
+
+        <label for="expenseCategory">Category</label>
+        <select id="expenseCategory" name="expenseCategory" required>
+            <option value="">Select Category</option>
+            <option value="Housing" <%= expense.category === 'Housing' ? 'selected' : '' %>>Housing</option>
+            <option value="Grocery" <%= expense.category === 'Grocery' ? 'selected' : '' %>>Grocery</option>
+            <option value="Insurance" <%= expense.category === 'Insurance' ? 'selected' : '' %>>Insurance</option>
+            <!-- Add more categories if needed -->
+        </select>
+
+        <label for="expenseDate">Date</label>
+        <input type="date" id="expenseDate" name="expenseDate" value="<%= new Date(expense.date).toISOString().split('T')[0] %>" required>
+
+        <input type="submit" value="Update Expense">
+    </form>
+</div>
+
+<%- include('../partials/footer.ejs') %>
