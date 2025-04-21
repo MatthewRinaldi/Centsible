@@ -270,4 +270,24 @@ exports.updateProfile = async (req, res, next) => {
         res.status(500).send("Error updating profile.");
     }
 };
+exports.deleteAccount = async (req, res) => {
+    try {
+        const userId = req.session.user._id; 
+        if (!userId) {
+            return res.status(401).send('Not authenticated');
+        }
+
+        await model.findByIdAndDelete(userId);
+
+        req.session.destroy(err => {
+            if (err) {
+                return res.status(500).send("Error logging out after deletion.");
+            }
+            res.redirect('/'); 
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error while deleting account.');
+    }
+};
 

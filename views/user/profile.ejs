@@ -84,6 +84,9 @@
     
                         <input type="submit" value="Update Profile">
                         </form>
+                        <form action="/users/deleteAccount" method="post" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+                            <input type="submit" value="Delete Account" style="background-color: red; color: white; margin-top: 20px;">
+                        </form>
                 </div>
             </div>
         </div>

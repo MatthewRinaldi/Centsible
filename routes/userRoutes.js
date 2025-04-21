@@ -25,4 +25,6 @@ router.post('/incomeUpdate', controller.income);
 
 router.post('/updateProfile', userController.updateProfile);
 
+router.post('/deleteAccount', userController.deleteAccount);
+
 module.exports = router;
