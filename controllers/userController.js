@@ -100,7 +100,6 @@ exports.profile = async (req, res, next) => {
         }
 
         if (req.query.type === 'all') {
-            return res.json({ categories: user.categories, total: categoriesData });
             return res.json({
                 categories: user.categories,
                 categoriesData: categoriesData,
