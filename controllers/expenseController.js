@@ -8,7 +8,33 @@ exports.getExpenses = async (req, res, next) => {
             return res.redirect("/users/login");
         }
 
-        const expenses = await model.find({ user: req.session.user }).sort({ date: -1 });
+        const { searchTerm, category, startDate, endDate, minAmount, maxAmount } = req.query;
+
+        let query = { user: req.session.user };
+
+        if (searchTerm) {
+        query.name = { $regex: searchTerm, $options: 'i' }; // Case-insensitive name match
+}
+
+        if (category && category !== "All") {
+        query.category = category;
+}
+
+
+         if (startDate || endDate) {
+        query.date = {};
+        if (startDate) query.date.$gte = new Date(startDate);
+        if (endDate) query.date.$lte = new Date(endDate);
+}
+
+        if (minAmount || maxAmount) {
+        query.amount = {};
+        if (minAmount) query.amount.$gte = parseFloat(minAmount);
+        if (maxAmount) query.amount.$lte = parseFloat(maxAmount);
+}
+
+const expenses = await model.find(query).sort({ date: -1 });
+
 
         const currentUser = await user.findById(req.session.user);
         let totalExpense = expenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
@@ -16,7 +42,13 @@ exports.getExpenses = async (req, res, next) => {
         res.render("expenses/expenses", {
             expenses,
             user: currentUser,
-            totalExpense
+            totalExpense,
+            searchTerm,
+            category,
+            startDate,
+            endDate,
+            minAmount,
+            maxAmount
         });
     } catch (err) {
         console.error("Error fetching expenses:", err);
@@ -189,8 +221,8 @@ exports.searchExpenses = async (req, res, next) => {
 
         res.render("expenses/expenses", {
             expenses,
-            currentPage: 'expenses',
-            user: req.session.user,
+            user: currentUser,
+            totalExpense,
             searchTerm,
             category,
             startDate,

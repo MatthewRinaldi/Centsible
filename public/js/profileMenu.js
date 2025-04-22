@@ -88,23 +88,111 @@ document.getElementById('spendingHabitsTab').addEventListener('click', () => {
             response.json().then(data => {
                 const spendingRecommendations = document.getElementById('spendingRecommendations');
                 spendingRecommendations.innerHTML = '';
+                
+                let temp = 0;
+                let tempText = "";
+                let highestExpense = "";
+                let tempPercent = 0;
+                let total = 0;
+                const currentDate = new Date();
+
                 data.categories.forEach(category => {
-                    const li = document.createElement('li');
-                    li.className = 'categorySpending';
-
-                    const wrapper = document.createElement('div');
-                    wrapper.className = "categoryItem";
-
-                    const nameSpan = document.createElement('span');
-                    nameSpan.className = "categoryName";
-                    nameSpan.textContent = category.name;
-
-
-                    wrapper.appendChild(nameSpan);
-                    li.appendChild(wrapper);
-
-                    spendingRecommendations.appendChild(li);
+                    data.categoriesData.forEach(data => {
+                        if (category.name === data._id) {
+                            total += data.totalSpending;
+                        }
+                    });
                 });
+
+                data.expenses.forEach(expense => {
+                    const expenseDate = new Date(expense.date);
+                    if (expenseDate.getMonth() === currentDate.getMonth() && expenseDate.getFullYear() === currentDate.getFullYear()) {
+                        if (expense.amount > temp) {
+                            data.categories.forEach(category => {
+                                if (expense.category === category.name) {
+                                    tempText = category.name;
+                                }
+                            });
+    
+                            temp = expense.amount;
+                            highestExpense = expense.name;
+                        }
+                    } else {
+                        total -= expense.amount;
+                    }
+                });
+
+                tempPercent = (temp / total) * 100;
+
+                const h3 = document.createElement("h3");
+                h3.className = "recOne";
+                h3.textContent = "This month, you spent the most on " + tempText + ", accounting for " + tempPercent.toFixed(2) + "% of your monthly spending. "
+                if (tempPercent > 50) {
+                    h3.textContent += " This is more than 50% of this month's expenses, consider evaluating this category's necessity. "
+                }
+
+                spendingRecommendations.appendChild(h3);
+                spendingRecommendations.appendChild(document.createElement("br"));
+
+                const h3_2 = document.createElement("h3");
+                h3_2.className = "recTwo";
+                const monthlyIncomeDifference = data.user.income.incomeAmount - total;
+                let monthlyIncomePercent = 0;
+
+                if (monthlyIncomeDifference > 0) {
+                    monthlyIncomePercent = total / data.user.income.incomeAmount * 100;
+                }
+
+                if (monthlyIncomeDifference < 0) {
+                    h3_2.textContent = "Based on this months spending, you spent more than your monthly income. Try lowering your spending to reach your spending goal of $" + data.user.income.savingsAmount + " in " + data.user.income.savingsDeadline + " months.";
+                } else if (monthlyIncomeDifference === 0) {
+                    h3_2.textContent = "Based on this months spending, you spent all of your monthly income. Try lowering your spending to reach your spending goal of $" + data.user.income.savingsAmount + " in " + data.user.income.savingsDeadline + " months.";
+                } else if (total < (data.user.income.savingsAmount / data.user.income.savingsDeadline)) {
+                    h3_2.textContent = "Based on this months spending, you spent " + monthlyIncomePercent.toFixed(2) + "% of your monthly income, with $" + monthlyIncomeDifference + " remaining. Try lowering your spending to reach your spending goal of $" + data.user.income.savingsAmount + " in " + data.user.income.savingsDeadline + " months.";
+                } else {
+                    h3_2.textContent = "Based on this months spending, you spent " + monthlyIncomePercent.toFixed(2) + "% of your monthly income, with $" + monthlyIncomeDifference + " remaining. You can still contribute to your savings goal of $" + data.user.income.savingsAmount + " in " + data.user.income.savingsDeadline + " months. Try to continue saving $" + (data.user.income.savingsAmount / data.user.income.savingsDeadline).toFixed(2) + " to achieve your goal by your desired deadline.";
+                }
+
+                spendingRecommendations.appendChild(h3_2);
+
+                if (temp/total > 0.5) {
+                    spendingRecommendations.appendChild(document.createElement("br"));
+
+                    const h3_3 = document.createElement("h3");
+                    h3_3.className = "recThree";
+                    h3_3.textContent = "It looks like you have spent " + (temp/total * 100).toFixed(2) + "% of your monthly income on " + highestExpense + ". Since this purchase accounts for more than half of your spending this month, consider whether it was a one-time event or something to budget for in future months.";
+                    spendingRecommendations.appendChild(h3_3);
+                }
+
+                spendingRecommendations.appendChild(document.createElement("br"));
+
+                const h3_4 = document.createElement("h3");
+                h3_4.className = "recFour";
+                let lastMonthTotal = 0;
+                let lastMonth = currentDate.getMonth() - 1;
+                let lastMonthYear = currentDate.getFullYear();
+
+                if (lastMonth < 0) {
+                    lastMonth = 11;
+                    lastMonthYear -= 1;
+                }
+                
+                data.expenses.forEach(expense => {
+                    const expenseDate = new Date(expense.date);
+                    if (expenseDate.getMonth() === lastMonth && expenseDate.getFullYear() === lastMonthYear) {
+                        lastMonthTotal += expense.amount;
+                    }
+                });
+
+                if (lastMonthTotal > total) {
+                    h3_4.textContent = "You have spent $" + (lastMonthTotal - total).toFixed(2) + " less than you did last month. Good job!";
+                } else if (lastMonthTotal === total) {
+                    h3_4.textContent = "You have spent the same amount as you did last month. Keep it up!";
+                } else {
+                    h3_4.textContent = "You have spent $" + (total - lastMonthTotal).toFixed(2) + " more than you did last month. Consider evaluating which of your expenses this month differed from last month and if they were necessary.";
+                }
+
+                spendingRecommendations.appendChild(h3_4);
             });   
         }
     });
