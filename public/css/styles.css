@@ -395,4 +395,23 @@ tr:nth-child(odd) {
   }
   
 
+/* Profile Spending Habits */
+
+  .recOne {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 20px;
+  }
+
+  .recTwo {
+    padding: 10px;
+  }
+
+  .recThree {
+    padding: 10px;
+  }
+
+  .recFour {
+    padding: 10px;
+  }
 
