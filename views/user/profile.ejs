@@ -1,118 +1,132 @@
-<%- include('../partials/header.ejs')%>
-    <div class="container">
+<%- include('../partials/header.ejs') %>
 
-        <div class="profile-container">
-            <div class="profile-box">
-                <div class="profile-pic">
-                    <h3><%= user.firstName%><br><%= user.lastName%></h3>
-                </div>
-                <div class="info-rows">
-                    <div class="row" id="currentSpendingTab">Current Spending</div>
-                    <div class="row" id="monthlySpendingTab">Monthly Spending</div>
-                    <div class="row" id="spendingHabitsTab">Spending Habits</div>
-                    <div class="row" id="budgetSettingsTab">Budget Setting</div>
-                    <div class="row" id="settingsTab">Settings</div>
-                </div>
+<div class="container">
+    <div class="profile-container">
+        <div class="profile-box">
+            <div class="profile-pic" id="overviewTrigger">
+                <h3><%= user.firstName %><br><%= user.lastName %></h3>
+            </div>
+
+            <div class="info-rows">
+                <div class="row" id="currentSpendingTab">Current Spending</div>
+                <div class="row" id="monthlySpendingTab">Monthly Spending</div>
+                <div class="row" id="spendingHabitsTab">Spending Habits</div>
+                <div class="row" id="budgetSettingsTab">Budget Setting</div>
+                <div class="row" id="settingsTab">Settings</div>
             </div>
         </div>
-
-        <div class="profile-content">
-            <div id="currentSpending" class="tab-content">
-                <h2 id="currentMonthHeader"></h2>
-                <div class="bubbles-container"></div>
-            </div>
-            <div id="monthlySpending" class="tab-content">
-                <h2>
-                    <a id="prevMonth" style="cursor: pointer;">&lt;</a>  
-                    <span id="selectedMonth"></span>   
-                    <a id="nextMonth" style="cursor: pointer;">&gt;</a>
-                </h2>
-                <div class="bubbles-container"></div>
-            </div>
-            <div id="spendingHabits" class="tab-content">
-                <h2>Spending Recommendations</h2>
-                <ul id="spendingRecommendations">
-                    
-                </ul>
-            </div>
-            <div id="budget" class="tab-content">
-                <h2>Categories <a style="font-weight: bold; cursor: pointer;" id="addCategoryBtn">+</a></h2>
-                <ul id="categoriesList"></ul>
-            </div>
-            <div id="settings" class="tab-content">
-                <h2>Settings</h2>
-                <div class="settingsContainer">
-                    <h4>Income Settings</h4>
-                    <form action="/users/incomeUpdate" method="post">
-                        <label for="monthlyIncome">Monthly Income:</label><br>
-                        <input type="number" id="monthlyIncome" name="monthlyIncome" min="1" style="margin-bottom: 10px;"><br>
-
-                        <label for="savingsGoal">Savings Goal:</label><br>
-                        <input type="number" id="savingsGoal" name="savingsGoal" min="1" style="margin-bottom: 10px;"><br>
-
-                        <label for="savingsDeadline">Duration of Savings Goal:</label><br>
-                        <input type="number" id="savingsDeadline" name="savingsDeadline" min="1" style="margin-bottom: 10px;"><br>
-
-                        <input type="hidden" id="month" name="month" value="<%= currentMonth %>">
-
-                        <input type="submit" value="Submit">
-                        <h4>Account Settings</h4>
-                    </form>
-                    <form action="/users/updateProfile" method="post">
-                        <!-- Name Field -->
-                        <label for="firstName">First Name:</label><br>
-                        <input type="text" id="firstName" name="firstName" value="<%= user.firstName %>" required><br>
-    
-                        <label for="lastName">Last Name:</label><br>
-                        <input type="text" id="lastName" name="lastName" value="<%= user.lastName %>" required><br>
-    
-                        <!-- Email Field -->
-                        <label for="email">Email:</label><br>
-                        <input type="email" id="email" name="email" value="<%= user.email %>" required><br>
-    
-                        <!-- Notification Preferences Field -->
-                        <label for="notifications">Notification Preferences:</label><br>
-                        <select id="notifications" name="notifications">
-                            <option value="true" <%= user.notifications ? 'selected' : '' %>>Enabled</option>
-                            <option value="false" <%= !user.notifications ? 'selected' : '' %>>Disabled</option>
-                        </select><br>
-                        <label for="budgetAlert">Budget Alert:</label><br>
-                    <select id="budgetAlert" name="budgetAlert">
-                    <option value="true" <%= user.budgetAlert ? 'selected' : '' %>>Enabled</option>
-                    <option value="false" <%= user.budgetAlert === false ? 'selected' : '' %>>Disabled</option>
-                    </select><br>
-    
-                        <input type="submit" value="Update Profile">
-                        </form>
-                        <form action="/users/deleteAccount" method="post" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
-                            <input type="submit" value="Delete Account" style="background-color: red; color: white; margin-top: 20px;">
-                        </form>
-                </div>
-            </div>
-        </div>
-
-        <div id="addCategoryModal" class="modal">
-            <div class="modal-content">
-                <h3>Enter New Category</h3>
-                <input type="text" id="newCategoryName" placeholder="Category Name" />
-                <button id="submitCategoryBtn">Submit</button>
-                <button id="cancelCategoryBtn">Cancel</button>
-            </div>
-        </div>
-
-        <div id="categoryBudgetModal" class="modal">
-            <div class="modal-content">
-                <h3>Enter a Budget Amount</h3>
-                <input type="number" id="categoryBudgetAmount" placeholder="0"/>
-                <button id="submitBudgetBtn">Submit</button>
-                <button id="cancelBudgetBtn">Cancel</button>
-            </div>
-        </div>
-
-        <div id="overlay"></div>
-
-        <script src="/js/categoryAdd.js"></script>
-        <script src="/js/profileMenu.js"></script>
-        <script src="/js/categoryBudget.js"></script>
     </div>
-<%- include('../partials/footer.ejs')%>
+
+    <div class="profile-content">
+        <!-- Overview Box -->
+        <div class="spending-overview" id="spendingOverview">
+            <h2>Spending Overview</h2>
+            <p><strong>Total Spent:</strong> $<%= totalExpense || 0 %></p>
+            <p><strong>Monthly Income:</strong> $<%= user.income?.incomeAmount || 0 %></p>
+            <p><strong>Remaining Budget:</strong> $<%= (user.income?.incomeAmount - totalExpense) || 0 %></p>
+            <p><strong>Savings Goal:</strong> $<%= user.income?.savingsAmount || 0 %> in 
+                <%= user.income?.savingsDeadline || 1 %> months 
+                (<%= parseFloat((user.income?.savingsAmount || 0) / (user.income?.savingsDeadline || 1)).toFixed(2) %>/mo)
+            </p>
+        </div>
+
+        <!-- Tabs -->
+        <div id="currentSpending" class="tab-content">
+            <h2 id="currentMonthHeader"></h2>
+            <div class="bubbles-container"></div>
+        </div>
+
+        <div id="monthlySpending" class="tab-content">
+            <h2>
+                <a id="prevMonth" style="cursor: pointer;">&lt;</a>  
+                <span id="selectedMonth"></span>   
+                <a id="nextMonth" style="cursor: pointer;">&gt;</a>
+            </h2>
+            <div class="bubbles-container"></div>
+        </div>
+
+        <div id="spendingHabits" class="tab-content">
+            <h2>Spending Recommendations</h2>
+            <ul id="spendingRecommendations"></ul>
+        </div>
+
+        <div id="budget" class="tab-content">
+            <h2>Categories <a style="cursor: pointer;" id="addCategoryBtn">+</a></h2>
+            <ul id="categoriesList"></ul>
+        </div>
+
+        <div id="settings" class="tab-content">
+            <h2>Settings</h2>
+            <div class="settingsContainer">
+                <form action="/users/incomeUpdate" method="post">
+                    <label>Monthly Income:</label><br>
+                    <input type="number" name="monthlyIncome" min="1"><br>
+
+                    <label>Savings Goal:</label><br>
+                    <input type="number" name="savingsGoal" min="1"><br>
+
+                    <label>Savings Duration (months):</label><br>
+                    <input type="number" name="savingsDeadline" min="1"><br>
+
+                    <input type="submit" value="Submit">
+                </form>
+
+                <form action="/users/updateProfile" method="post">
+                    <label>First Name:</label><br>
+                    <input type="text" name="firstName" value="<%= user.firstName %>"><br>
+
+                    <label>Last Name:</label><br>
+                    <input type="text" name="lastName" value="<%= user.lastName %>"><br>
+
+                    <label>Email:</label><br>
+                    <input type="email" name="email" value="<%= user.email %>"><br>
+
+                    <label>Notifications:</label><br>
+                    <select name="notifications">
+                        <option value="true" <%= user.notifications ? 'selected' : '' %>>Enabled</option>
+                        <option value="false" <%= !user.notifications ? 'selected' : '' %>>Disabled</option>
+                    </select><br>
+
+                    <label>Budget Alert:</label><br>
+                    <select name="budgetAlert">
+                        <option value="true" <%= user.budgetAlert ? 'selected' : '' %>>Enabled</option>
+                        <option value="false" <%= user.budgetAlert === false ? 'selected' : '' %>>Disabled</option>
+                    </select><br>
+
+                    <input type="submit" value="Update Profile">
+                </form>
+
+                <form action="/users/deleteAccount" method="post" onsubmit="return confirm('Are you sure?');">
+                    <input type="submit" value="Delete Account" style="background:red; color:white;">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<div id="addCategoryModal" class="modal">
+    <div class="modal-content">
+        <h3>Enter New Category</h3>
+        <input type="text" id="newCategoryName" placeholder="Category Name" />
+        <button id="submitCategoryBtn">Submit</button>
+        <button id="cancelCategoryBtn">Cancel</button>
+    </div>
+</div>
+
+<div id="categoryBudgetModal" class="modal">
+    <div class="modal-content">
+        <h3>Enter a Budget Amount</h3>
+        <input type="number" id="categoryBudgetAmount" placeholder="0"/>
+        <button id="submitBudgetBtn">Submit</button>
+        <button id="cancelBudgetBtn">Cancel</button>
+    </div>
+</div>
+
+<div id="overlay"></div>
+
+<!-- Scripts -->
+<script src="/js/categoryAdd.js"></script>
+<script src="/js/categoryBudget.js"></script>
+<script src="/js/profileMenu.js"></script>
+<%- include('../partials/footer.ejs') %>

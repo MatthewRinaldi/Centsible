@@ -268,3 +268,23 @@ fetchData('/users/profile?type=current').then(data => {
         renderBubbleChart('#currentSpending . bubbles-container', data.categoriesData);
     }
 });
+
+// Default: show overview only
+showTab("none");
+document.getElementById("spendingOverview").style.display = "block";
+
+// Hide overview on tab click
+const tabButtons = document.querySelectorAll('.info-rows .row');
+tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.getElementById("spendingOverview").style.display = "none";
+    });
+});
+
+// Bring back overview when clicking name
+document.getElementById("overviewTrigger").addEventListener("click", () => {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove("active"));
+    // Show overview
+    document.getElementById("spendingOverview").style.display = "block";
+});
